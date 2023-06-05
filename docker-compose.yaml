@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  backend:
+    image: 'securecapita:latest'
+    build: .
+    container_name: backend
+    env_file:
+      .env
+    ports:
+      - "${SPRING_LOCAL_PORT}:${SPRING_DOCKER_PORT}"
+    depends_on:
+      - database
+    environment:
+      SPRING_APPLICATION_JSON: '{
+        "spring.datasource.url" : "jdbc:mysql://database:${MYSQLDB_DOCKER_PORT}/${MYSQLDB_DATABASE}",
+        "spring.datasource.username" : "${MYSQLDB_USER}",
+        "spring.datasource.password" : "${MYSQLDB_ROOT_PASSWORD}",            
+        "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.MySQL8Dialect",
+        "spring.jpa.properties.hibernate.globally_quoted_identifiers" : "true",
+        "spring.jpa.properties.hibernate.format_sql" : "true",
+        "spring.jpa.hibernate.ddl-auto" : "update",
+        "spring.jpa.show-sql" : "true",
+        "spring.jpa.generate-ddl" : "true",
+        "spring.jpa.database-platform" : "org.hibernate.dialect.MySQL8InnoDBDialect",
+        "spring.sql.init.mode" : "never"
+      }'
+  database:
+    image: 'mysql:latest'
+    container_name: database
+    ports:
+      - "${MYSQLDB_LOCAL_PORT}:${MYSQLDB_DOCKER_PORT}"
+    volumes:
+      - "./src/main/docker/init_database.sql:/docker-entrypoint-initdb.d/init_database.sql"
+    environment:
+      - MYSQL_DATABASE=${MYSQLDB_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQLDB_ROOT_PASSWORD}
