@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: "jdbc:mysql://localhost:3306/securecapita"
+    username: "root"
+    password: "letmein"
+  liquibase:
+    change-log: "classpath:config/liquibase/master.xml"
+logging:
+  level:
+    liquibase: "INFO"
