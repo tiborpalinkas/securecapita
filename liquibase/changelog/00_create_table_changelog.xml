@@ -8,6 +8,31 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
-    <changeSet  id="00"  author="${AUTHOR}" >
+    <changeSet  id="00_create_table_users"  author="palitib" >
+        <sqlFile dbms="mysql"
+                 encoding="utf-8"
+                 splitStatements="false"
+                 path="changelog/sqlFiles/00_create_table_users.sql" />
+        <rollback>
+            <sqlFile path="changelog/sqlFiles/00_create_table_users-rollback.sql" />
+        </rollback>
+    </changeSet>
+    <changeSet  id="01_create_table_roles"  author="palitib" >
+        <sqlFile dbms="mysql"
+                 encoding="utf-8"
+                 splitStatements="false"
+                 path="changelog/sqlFiles/01_create_table_roles.sql" />
+        <rollback>
+            <sqlFile path="changelog/sqlFiles/01_create_table_roles-rollback.sql" />
+        </rollback>
+    </changeSet>
+    <changeSet  id="02_create_table_userroles"  author="palitib" >
+        <sqlFile dbms="mysql"
+                 encoding="utf-8"
+                 splitStatements="false"
+                 path="changelog/sqlFiles/02_create_table_userroles.sql" />
+        <rollback>
+            <sqlFile path="changelog/sqlFiles/02_create_table_userroles-rollback.sql" />
+        </rollback>
     </changeSet>
 </databaseChangeLog>

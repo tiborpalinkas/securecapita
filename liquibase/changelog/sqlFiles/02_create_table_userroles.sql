@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS UserRoles(
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    role_id BIGINT NOT NULL,
+    PRIMARY KEY(id)
+);
