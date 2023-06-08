@@ -2,5 +2,6 @@ CREATE TABLE IF NOT EXISTS Roles(
     id BIGINT NOT NULL AUTO_INCREMENT,
     name VARCHAR(50) NOT NULL,
     permissions VARCHAR(255) NOT NULL,
+    CONSTRAINT UQ_Roles_Name UNIQUE (name),
     PRIMARY KEY(id)
 );

@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.9'
 
 services:
   backend:
@@ -44,4 +44,4 @@ services:
     volumes:
       - ./liquibase/master.xml:/liquibase/master.xml
       - ./liquibase/changelog:/liquibase/changelog
-    command: "--username=${MYSQLDB_USER} --password=${MYSQLDB_ROOT_PASSWORD} --url=jdbc:mysql://database:${MYSQLDB_DOCKER_PORT}/${MYSQLDB_DATABASE} --changeLogFile=master.xml update --log-level=INFO"
+    command: "--username=${MYSQLDB_USER} --password=${MYSQLDB_ROOT_PASSWORD} --url=jdbc:mysql://database:${MYSQLDB_DOCKER_PORT}/${MYSQLDB_DATABASE} --changeLogFile=master.xml --log-level=INFO update"

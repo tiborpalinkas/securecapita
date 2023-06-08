@@ -8,31 +8,93 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
-    <changeSet  id="00_create_table_users"  author="palitib" >
+    <changeSet  id="00_create_table_users"  author="palitib" runInTransaction="true">
         <sqlFile dbms="mysql"
                  encoding="utf-8"
                  splitStatements="false"
                  path="changelog/sqlFiles/00_create_table_users.sql" />
         <rollback>
-            <sqlFile path="changelog/sqlFiles/00_create_table_users-rollback.sql" />
+            <dropForeignKeyConstraint baseTableName="Users" />
+            <dropTable tableName="Users" />
         </rollback>
     </changeSet>
-    <changeSet  id="01_create_table_roles"  author="palitib" >
+    <changeSet  id="01_create_table_roles"  author="palitib" runInTransaction="true">
         <sqlFile dbms="mysql"
                  encoding="utf-8"
                  splitStatements="false"
                  path="changelog/sqlFiles/01_create_table_roles.sql" />
         <rollback>
-            <sqlFile path="changelog/sqlFiles/01_create_table_roles-rollback.sql" />
+            <dropTable tableName="Roles" />
         </rollback>
     </changeSet>
-    <changeSet  id="02_create_table_userroles"  author="palitib" >
+    <changeSet  id="02_create_table_userroles"  author="palitib" runInTransaction="true">
         <sqlFile dbms="mysql"
                  encoding="utf-8"
                  splitStatements="false"
                  path="changelog/sqlFiles/02_create_table_userroles.sql" />
         <rollback>
-            <sqlFile path="changelog/sqlFiles/02_create_table_userroles-rollback.sql" />
+            <dropTable tableName="UserRoles" />
+        </rollback>
+    </changeSet>
+    <changeSet  id="03_create_table_events"  author="palitib" runInTransaction="true">
+        <sqlFile dbms="mysql"
+                 encoding="utf-8"
+                 splitStatements="false"
+                 path="changelog/sqlFiles/03_create_table_events.sql" />
+        <rollback>
+            <dropTable tableName="Events" />
+        </rollback>
+    </changeSet>
+    <changeSet  id="04_create_table_userevents"  author="palitib" runInTransaction="true">
+        <sqlFile dbms="mysql"
+                 encoding="utf-8"
+                 splitStatements="false"
+                 path="changelog/sqlFiles/04_create_table_userevents.sql" />
+        <rollback>
+            <dropTable tableName="UserEvents" />
+        </rollback>
+    </changeSet>
+    <changeSet  id="05_alter_table_events"  author="palitib" runInTransaction="true">
+        <sql>
+            ALTER TABLE Events DROP CONSTRAINT type_check;
+            ALTER TABLE Events
+            ADD CONSTRAINT type_check CHECK(type IN (
+            'LOGIN_ATTEMPT', 'LOGIN_ATTEMP_FAILURE', 'LOGIN_ATTEMPT_SUCCESS', 'PROFILE_UPDATE',
+            'PROFILE_PICTURE_UPDATE', 'ROLE_UPDATE', 'ACCOUNT_SETTINGS_UPDATE', 'PASSWORD_UPDATE', 'MFA_UPDATE'));
+        </sql>
+        <rollback>
+            <modifyDataType
+                tableName="Events"
+                columnName="type"
+                newDataType="VARCHAR(50) NOT NULL" />
+        </rollback>
+    </changeSet>
+    <changeSet id="06_create_table_account_verification" author="palitib">
+        <createTable tableName="AccountVerification">
+            <column name="id" type="BIGINT" autoIncrement="true" defaultOnNull="false">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="user_id" type="BIGINT" defaultOnNull="false" />
+            <column name="url" type="VARCHAR(255)" defaultOnNull="false" />
+        </createTable>
+        <addForeignKeyConstraint
+                baseTableName="AccountVerification"
+                baseColumnNames="user_id"
+                constraintName="fk_account_users"
+                referencedTableName="Users"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE" />
+        <addUniqueConstraint
+                tableName="AccountVerification"
+                columnNames="user_id"
+                constraintName="UQ_AccountVerification_User_Id" />
+        <addUniqueConstraint
+                tableName="AccountVerification"
+                columnNames="url"
+                constraintName="UQ_AccountVerification_Url" />
+        <rollback>
+            <dropTable tableName="AccountVerification" />
         </rollback>
     </changeSet>
 </databaseChangeLog>
