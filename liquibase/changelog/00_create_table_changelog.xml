@@ -97,4 +97,44 @@
             <dropTable tableName="AccountVerification" />
         </rollback>
     </changeSet>
+    <changeSet id="07" author="palitib">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ResetPasswordVerifications" />
+            </not>
+        </preConditions>
+        <createTable tableName="ResetPasswordVerifications">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="url" type="VARCHAR(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="expiration_date" type="DATETIME">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <addForeignKeyConstraint
+                baseTableName="ResetPasswordVerifications"
+                baseColumnNames="user_id"
+                constraintName="fk_reset_password_verifications_users"
+                referencedTableName="Users"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE" />
+        <addUniqueConstraint
+                tableName="ResetPasswordVerifications"
+                columnNames="user_id"
+                constraintName="UQ_ResetPasswordVerifications_User_Id" />
+        <addUniqueConstraint
+                tableName="ResetPasswordVerifications"
+                columnNames="url"
+                constraintName="UQ_ResetPasswordVerifications_Url" />
+        <rollback>
+            <dropTable tableName="ResetPasswordVerifications" />
+        </rollback>
+    </changeSet>
 </databaseChangeLog>
